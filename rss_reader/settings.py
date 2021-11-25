@@ -20,7 +20,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-w(-a7gy%zz+qgf3=a8076&m(k%ssjidegj-#c(xz=9+o&s!gr('
+
+try:
+    from rss_reader.local_settings import SECRET_KEY
+except ModuleNotFoundError:
+    print("Brak konfiguracji secret_key w pliku local_settings.py!")
+    print("Uzupełnij dane i spróbuj ponownie!")
+    exit(0)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
