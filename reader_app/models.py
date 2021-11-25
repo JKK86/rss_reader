@@ -8,6 +8,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'Categories'
+
 
 class Channel(models.Model):
     name = models.CharField(max_length=128)
@@ -21,6 +24,9 @@ class Channel(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['-last_build_date']
+
 
 class Content(models.Model):
     title = models.CharField(max_length=128)
@@ -32,3 +38,6 @@ class Content(models.Model):
 
     def __str__(self):
         return f'{self.channel.name}: {self.title}'
+
+    class Meta:
+        ordering = ['-publication_date']
