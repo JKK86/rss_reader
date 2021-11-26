@@ -23,3 +23,10 @@ def test_content_create(set_up):
     content0 = Content.objects.last()
     assert content0.title == "Episode 0"
     assert content0.description == "This is episode 0"
+
+
+@pytest.mark.django_db
+def test_list_channels(client, set_up):
+    response = client.get('/')
+    assert response.status_code == 200
+    assert len(set_up[2]) == len(response.context['contents'])
