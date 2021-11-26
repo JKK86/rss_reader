@@ -16,7 +16,7 @@ class Channel(models.Model):
     name = models.CharField(max_length=128)
     link = models.URLField()
     description = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='channels')
     copyright = models.CharField(max_length=128)
     last_build_date = models.DateTimeField()
     image = models.URLField()
@@ -33,7 +33,7 @@ class Content(models.Model):
     description = models.TextField()
     publication_date = models.DateTimeField()
     link = models.URLField()
-    channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE, related_name="contents")
     guid = models.CharField(max_length=64)
 
     def __str__(self):
