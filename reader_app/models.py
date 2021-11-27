@@ -1,3 +1,5 @@
+import feedparser
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -16,9 +18,9 @@ class Channel(models.Model):
     name = models.CharField(max_length=128)
     link = models.URLField()
     description = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='channels')
-    copyright = models.CharField(max_length=128)
-    last_build_date = models.DateTimeField()
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True, related_name='channels')
+    copyright = models.CharField(max_length=128, null=True)
+    last_build_date = models.DateTimeField(null=True)
     image = models.URLField()
 
     def __str__(self):
@@ -26,6 +28,25 @@ class Channel(models.Model):
 
     class Meta:
         ordering = ['-last_build_date']
+
+    def clean(self):
+        feed = feedparser.parse(self.link)
+        if feed.bozo:
+            raise ValidationError("Cannot fetch the content from provided link")
+
+    def save(self, *args, **kwargs):
+        feed = feedparser.parse(self.link)
+        self.name = feed.channel.get('title')
+        self.description = feed.channel.get('description')
+        self.copyright = feed.channel.get('copyright')
+        self.last_build_date = feed.channel.get('lastBuildDate')
+        self.image = feed.channel.image["href"]
+        if not self.category:
+            category_name = feed.channel.get('category')
+            if category_name:
+                category, created = Category.objects.get_or_create(name=category_name)
+                self.category = category
+        super().save(*args, **kwargs)
 
 
 class Content(models.Model):
