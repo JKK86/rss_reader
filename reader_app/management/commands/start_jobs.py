@@ -23,10 +23,14 @@ def fetch_content(channel):
     save_new_content(channel, feed)
 
 
+def get_content():
+    channels = Channel.objects.all()
+    for channel in channels:
+        fetch_content(channel)
+
+
 class Command(BaseCommand):
     help = 'Get new feeds'
 
     def handle(self, *args, **options):
-        channels = Channel.objects.all()
-        for channel in channels:
-            fetch_content(channel)
+        get_content()
