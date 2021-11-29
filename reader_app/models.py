@@ -55,7 +55,7 @@ class Content(models.Model):
     publication_date = models.DateTimeField()
     link = models.URLField()
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE, related_name="contents")
-    guid = models.CharField(max_length=64)
+    guid = models.CharField(max_length=255)
 
     def __str__(self):
         return f'{self.channel.name}: {self.title}'
