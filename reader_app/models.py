@@ -1,6 +1,7 @@
 import feedparser
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.text import slugify
 
 
 class Category(models.Model):
@@ -13,9 +14,15 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = 'Categories'
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+            super(Category, self).save(*args, **kwargs)
+
 
 class Channel(models.Model):
     name = models.CharField(max_length=128)
+    slug = models.SlugField(max_length=128)
     link = models.URLField()
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True, related_name='channels')
@@ -37,6 +44,7 @@ class Channel(models.Model):
     def save(self, *args, **kwargs):
         feed = feedparser.parse(self.link)
         self.name = feed.channel.get('title')
+        self.slug = slugify(self.name)
         self.description = feed.channel.get('description')
         self.copyright = feed.channel.get('copyright')
         self.last_build_date = feed.channel.get('lastBuildDate')

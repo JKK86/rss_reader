@@ -11,7 +11,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Channel)
 class ChannelAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'last_build_date')
+    list_display = ('name', 'slug', 'category', 'last_build_date')
     list_filter = ('category', )
     search_fields = ('name', )
     fields = ['link', 'category']
