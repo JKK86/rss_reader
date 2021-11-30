@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}
+    {{ object }}
+{% endblock %}
+{% block content %}
+    {% with category=channel.category %}
+        <h1>{{ object }}</h1>
+        <div class="module">
+            <img src="{{ channel.image }}" alt="{{ channel.name }}"/>
+            <p>{{ channel.description|linebreaks }}</p>
+            <p>{{ channel.last_build_date }}</p>
+            <p>{{ channel.copyright }}</p>
+        </div>
+    {% endwith %}
+{% endblock %}

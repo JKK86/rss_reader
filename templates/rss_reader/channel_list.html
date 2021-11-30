@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}
+    {% if category %}
+        Channels of the category: {{ category.name }}
+    {% else %}
+        All channels
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <h1>
+        {% if category %}
+            Channels of the category: {{ category.name }}
+        {% else %}
+            All channels
+        {% endif %}
+    </h1>
+    <div class="contents">
+        <h3>Categories</h3>
+        <ul id="modules">
+            <li {% if not category %}class="selected"{% endif %}>
+                <a href="{% url 'channel_list' %}">All</a></li>
+            {% for cat in categories %}
+                <li {% if cat == category %}class="selected"{% endif %}>
+                    <a href="{% url 'channel_list_by_category' cat.slug %}">{{ cat.name }}
+                        <br><span>{{ cat.total_channels }} channel{{ cat.total_channels|pluralize:"s" }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="module">
+        {% for channel in channels %}
+            {% with category=channel.category %}
+                <img src="{{ channel.image }}" alt="{{ channel.name }}"/>
+                <h3><a href="{% url 'channel_detail' channel.slug %}">{{ channel }}</a></h3>
+                <p>{{ channel.description }}</p>
+                <p>
+                    <a href="{% url 'channel_list_by_category' category.slug %}">{{ category }}.</a>
+                </p>
+            {% endwith %}
+        {% endfor %}
+        {% include 'pagination.html' with page=channels %}
+    </div>
+{% endblock %}
