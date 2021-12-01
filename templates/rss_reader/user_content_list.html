@@ -5,16 +5,18 @@
 {% block content %}
     <h1>My feeds</h1>
     <div class="container">
-        {% for el in contents %}
+        {% for content in object_list %}
             <div class="card">
-                <img src="{{ el.channel.image }}" alt="{{ el.channel.name }}"/>
-                <h3>{{ el.title }}</h3>
-                <p>{{ el.description }}</p>
-                <p><a href="{{ el.link }}">Check It!</a></p>
+                <img src="{{ content.channel.image }}" alt="{{ content.channel.name }}"/>
+                <h3>{{ content.title }}</h3>
+                <p>{{ content.description }}</p>
+                <p><a href="{{ content.link }}">Check It!</a></p>
             </div>
         {% empty %}
-            <p>There is no content.</p>
+            <p>There is no content.
+                <a href="{% url 'channel_list' %}">Look at the available channels</a>
+                 and choose those you would like to follow
+            </p>
         {% endfor %}
-        <p><a href="">Enroll to channel</a></p>
     </div>
 {% endblock %}

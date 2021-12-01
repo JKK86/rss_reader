@@ -10,6 +10,18 @@
             <p>{{ channel.description|linebreaks }}</p>
             <p>{{ channel.last_build_date }}</p>
             <p>{{ channel.copyright }}</p>
+            {% if request.user.is_authenticated and requset.user not in channel.followers %}
+                <form action="{% url 'follow_channel' %}" method="post">
+                    {% csrf_token %}
+                    {{ follow_form }}
+                    <input type="submit" class="button" value="Follow">
+                </form>
+            {% elif request.user.is_authenticated %}
+                You are following the channel! <a href="">Remove the channel from your list</a>
+            {% else %}
+                <a href="{% url "login" %}" class="button"> Login</a> or
+                <a href="{% url "registration" %}" class="button"> sign up </a> to follow the channel
+            {% endif %}
         </div>
     {% endwith %}
 {% endblock %}
