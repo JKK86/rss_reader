@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
 
+from rss_reader import settings
+
 
 class Category(models.Model):
     name = models.CharField(max_length=64)
@@ -29,6 +31,7 @@ class Channel(models.Model):
     copyright = models.CharField(max_length=128, null=True)
     last_build_date = models.DateTimeField(null=True)
     image = models.URLField()
+    followers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="channels", blank=True)
 
     def __str__(self):
         return self.name
