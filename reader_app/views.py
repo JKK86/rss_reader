@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, FormView
@@ -46,7 +46,7 @@ class ChannelDetailView(DetailView):
         return context
 
 
-class UserFollowChannelView(LoginRequiredMixin, FormView):
+class FollowChannelView(LoginRequiredMixin, FormView):
     channel = None
     form_class = ChannelFollowForm
 
@@ -66,3 +66,11 @@ class UserContentListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.filter(channel__followers__in=[self.request.user])[:10]
+
+
+class RemoveChannelFollowingView(LoginRequiredMixin, View):
+    def post(self, request, channel_id):
+        channel = Channel.objects.get(pk=channel_id)
+        user = request.user
+        channel.followers.remove(user)
+        return redirect('user_content_list')
